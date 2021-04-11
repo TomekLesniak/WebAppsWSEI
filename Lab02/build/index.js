@@ -65,9 +65,10 @@ function onRecordChannel1() {
 }
 function onPlayChannel1() {
     channel1.forEach(function (sound) {
+        var prevTime = 0;
         setTimeout(function () {
             playSound(sound.key);
-        }, sound.time);
+        }, sound.time - prevTime);
     });
 }
 function playSound(soundKey) {

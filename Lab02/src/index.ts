@@ -76,6 +76,7 @@ function onRecordChannel1(): void{
 
 function onPlayChannel1(): void{
     channel1.forEach(sound => {
+        let prevTime = 0;
         setTimeout(() => {
             playSound(sound.key)
         }, sound.time);
