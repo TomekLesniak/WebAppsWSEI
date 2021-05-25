@@ -1,13 +1,17 @@
+import { AppStorage } from "./notes/appStorage";
 import { Note } from "./notes/note";
 import { Notes } from "./notes/notes";
 
 export class App {
     notes: Notes = new Notes();
+    appStorage: AppStorage = new AppStorage();
 
     constructor() {
         document.body.querySelector('#addNoteButton').
                     addEventListener('click', () => this.addNote());
 
+        this.notes = this.appStorage.loadNotes();
+        this.render();
     }
 
     addNote() {
@@ -15,16 +19,18 @@ export class App {
         const bodyInput : HTMLInputElement = document.querySelector('#bodyInput');
         const colorInput : HTMLInputElement = document.querySelector('#colorInput');
         const note = new Note(titleInput.value, bodyInput.value, colorInput.value);
+
         this.notes.addNote(note);
         this.render();
 
-        
+        this.appStorage.saveNotes(this.notes);
     }
 
     render() {
+        const noteContainer = document.querySelector('.notes-container');
+        noteContainer.innerHTML = ""; //re-renders
+
         this.notes.sortedNotes.forEach(note => {
-        console.log(note);
-            const noteContainer = document.querySelector('.notes-container');
         const noteCard = document.createElement('div');
         const noteTitle = document.createElement('h4');
         noteTitle.textContent = note.title;
@@ -34,45 +40,37 @@ export class App {
         temp.innerText = `Description: ${note.body}`; 
         noteCard.appendChild(temp);
 
-        // const country = document.createElement('span');
-        // country.innerText = `Country: ${weatherInfo.sys.country}`; 
-        // noteCard.appendChild(country);
-
-        // const description = document.createElement('span');
-        // description.innerText = `Description: ${weatherInfo.weather[0].description}`; 
-        // noteCard.appendChild(description);
-
         noteCard.className = 'note-card';
         noteCard.style.background = note.color;
+
+        var deleteBox = document.createElement('div');
+        deleteBox.textContent = 'X';
+        deleteBox.className = 'remove-box';
+        let toBeRemoved = false;
+        deleteBox.addEventListener('click', () => {
+            toBeRemoved = true;
+        })
+        noteCard.appendChild(deleteBox);
+
+        if(note.isPinned) {
+            noteCard.classList.toggle('pinned')
+        }
+
+        //events
+        noteCard.addEventListener('click', () => {
+            this.notes.removeNote(note);
+            if(toBeRemoved === false) {
+                note.isPinned = !note.isPinned;
+                this.notes.addNote(note);
+            }
+
+           this.appStorage.saveNotes(this.notes);
+           this.render();
+        })
+
         noteContainer.append(noteCard);
         })
+
         
     }
-
-    createNoteCard(note: Note){
-        
-    }
-
-
-
-    saveData(data: any){
-        localStorage.setItem('weatherData', JSON.stringify(data));
-    }
-
-    getData() {
-        const data = localStorage.getItem('weatherData');
-        if(data){
-            return JSON.parse(data);
-        } else {
-            return {};
-        }
-    }
-}
-
-
-class Weather {
-    city: string;
-    temp: string;
-    description: string;
-    country: string;
 }

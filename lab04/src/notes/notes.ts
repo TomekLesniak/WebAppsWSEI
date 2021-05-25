@@ -9,18 +9,10 @@ export class Notes {
         }
     }
 
-    private get pinnedNotes() {
-        return this.allNotes.filter((note) => {
-            note.isPinned === true;
-        })
-    }
-
     get sortedNotes() {
-        const remainingNotes = this.allNotes.filter(note => {
-            note.isPinned === false;
-        })
+        const sorted = this.allNotes.sort(note => note.isPinned ? -1 : 1);
 
-        return [...this.pinnedNotes, ...remainingNotes];
+        return sorted;
     }
 
     addNote = (note: Note) => {

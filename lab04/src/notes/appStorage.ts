@@ -4,10 +4,25 @@ import { Notes } from './notes';
 
 export class AppStorage implements IAppStorage {
     loadNotes(): Notes {
-        throw new Error('Method not implemented.');
+        const data = localStorage.getItem('notes');
+        if(data){
+            const notes = JSON.parse(data);
+            const output = new Notes(notes);
+            return output;
+        } else {
+            return new Notes();
+        }
     }
     saveNotes(notes: Notes): void {
-        throw new Error('Method not implemented.');
+
+        if(localStorage.getItem('notes') !== null){
+            this.clear();
+        }
+        localStorage.setItem('notes', JSON.stringify(notes.sortedNotes));
+    }
+
+    clear(): void {
+        localStorage.removeItem('notes');
     }
 
 }

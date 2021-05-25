@@ -49,6 +49,33 @@ body {
   backface-visibility: hidden;
   transform: translateZ(0);
   transition: transform 0.25s ease-out;
+  position: relative;
+
+  .remove-box {
+    position: absolute;
+    top: 0;
+    right: 1.5rem;
+    z-index: 1;
+    padding: 0.1rem 0.5rem;
+  }
+
+  &.pinned {
+    position: relative;
+  }
+
+  &.pinned::after {
+    content: "!";
+    color: red;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.1rem 0.5rem;
+    background-color: yellow;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: inherit;
+  }
 
   &:hover {
     transform: scale(1.05);
