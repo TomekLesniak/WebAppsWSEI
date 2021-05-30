@@ -1,3 +1,5 @@
+import { FirebaseAppStorage } from "./notes/firebaseAppStorage";
+
 export const firebaseConfig = {
     apiKey: "AIzaSyCUYfUxhjFQph21TL4VI4dDTvJdnod0Feg",
     authDomain: "notes-app-be309.firebaseapp.com",
@@ -6,3 +8,5 @@ export const firebaseConfig = {
     messagingSenderId: "237746480767",
     appId: "1:237746480767:web:c82a75eba54b273218014a"
   };
+
+  export const usedAppStorage = new FirebaseAppStorage();

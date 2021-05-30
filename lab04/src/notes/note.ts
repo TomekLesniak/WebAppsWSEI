@@ -6,8 +6,8 @@ export class Note {
     isPinned: boolean;
     dateCreated: Date;
 
-    constructor(title: string, body: string, color: string, isPinned?: boolean) {
-        this.id = title + color;
+    constructor(title: string, body: string, color: string, isPinned?: boolean, id?: string) {
+        this.id = id? id : title + color;
         this.title = title;
         this.body = body;
         this.color = color;

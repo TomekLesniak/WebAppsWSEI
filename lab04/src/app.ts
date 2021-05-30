@@ -1,4 +1,6 @@
+import { usedAppStorage } from "./config";
 import { AppStorage } from "./notes/appStorage";
+import { FirebaseAppStorage } from "./notes/firebaseAppStorage";
 import { Note } from "./notes/note";
 import { Notes } from "./notes/notes";
 
@@ -7,17 +9,22 @@ import { Notes } from "./notes/notes";
 
 export class App {
     notes: Notes = new Notes();
-    appStorage: AppStorage = new AppStorage();
+    appStorage: AppStorage = usedAppStorage;
 
     constructor() {
         document.body.querySelector('#addNoteButton').
                     addEventListener('click', () => this.addNote());
 
-        this.notes = this.appStorage.loadNotes();
+        this.loadNotes();
         this.render();
     }
 
-    addNote() {
+    async loadNotes(){
+        this.notes = await this.appStorage.loadNotes();
+        this.render();
+    }
+
+    async addNote() {
         const titleInput : HTMLInputElement = document.querySelector('#titleInput');
         const bodyInput : HTMLInputElement = document.querySelector('#bodyInput');
         const colorInput : HTMLInputElement = document.querySelector('#colorInput');
@@ -26,7 +33,7 @@ export class App {
         this.notes.addNote(note);
         this.render();
 
-        this.appStorage.saveNotes(this.notes);
+        await this.appStorage.saveNote(note);
     }
 
     render() {
@@ -67,7 +74,7 @@ export class App {
                 this.notes.addNote(note);
             }
 
-           this.appStorage.saveNotes(this.notes);
+           this.appStorage.deleteNote(note.id);
            this.render();
         })
 

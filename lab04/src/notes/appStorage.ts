@@ -2,27 +2,29 @@ import {IAppStorage} from './interfaces/appStorage'
 import { Note } from './note';
 import { Notes } from './notes';
 
+
+
 export class AppStorage implements IAppStorage {
-    loadNotes(): Notes {
+    saveNote(note: Note): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
+    updateNote(note: Note): void {
+        throw new Error('Method not implemented.');
+    }
+    loadNote(id: string): Note {
+        throw new Error('Method not implemented.');
+    }
+    deleteNote(id: string): void {
+        throw new Error('Method not implemented.');
+    }
+    loadNotes(): Promise<Notes> {
         const data = localStorage.getItem('notes');
         if(data){
             const notes = JSON.parse(data);
             const output = new Notes(notes);
-            return output;
+            return Promise.resolve(output);
         } else {
-            return new Notes();
+            return Promise.resolve(new Notes());
         }
     }
-    saveNotes(notes: Notes): void {
-
-        if(localStorage.getItem('notes') !== null){
-            this.clear();
-        }
-        localStorage.setItem('notes', JSON.stringify(notes.sortedNotes));
-    }
-
-    clear(): void {
-        localStorage.removeItem('notes');
-    }
-
 }
