@@ -2,6 +2,9 @@ import { AppStorage } from "./notes/appStorage";
 import { Note } from "./notes/note";
 import { Notes } from "./notes/notes";
 
+
+
+
 export class App {
     notes: Notes = new Notes();
     appStorage: AppStorage = new AppStorage();
