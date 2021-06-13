@@ -18,5 +18,4 @@ export class Note {
     toggleIsPinned = () => {
         this.isPinned = !this.isPinned;
     }
-
 }

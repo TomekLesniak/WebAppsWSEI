@@ -16,12 +16,22 @@ export class Notes {
     }
 
     addNote = (note: Note) => {
+        if(note === null || this.allNotes.includes(note)) {
+            return false;
+        }
+
         this.allNotes.push(note);
+        return true;
     }
 
     removeNote = (note: Note) => {
         const searchIndex = this.allNotes.indexOf(note);
+        if(searchIndex < 0){
+            return false;
+        }
+
         this.allNotes.splice(searchIndex, 1);
+        return true;
     }
 
 }
