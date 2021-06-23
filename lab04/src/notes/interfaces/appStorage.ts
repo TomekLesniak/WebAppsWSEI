@@ -4,8 +4,8 @@ import { Notes } from "../notes";
 export interface IAppStorage {
     //saveNotes(notes: Notes): void;
     saveNote(note: Note): Promise<void>;
-    updateNote(note: Note): void;
-    loadNote(id: string): Note;
+    updateNote(id: string, isPinned: boolean): Promise<void>;
+    loadNote(id: string): Promise<Note>;
     loadNotes() : Promise<Notes>;
-    deleteNote(id: string): void;
+    deleteNote(id: string): Promise<void>;
 }

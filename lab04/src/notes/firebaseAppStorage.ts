@@ -2,39 +2,17 @@ import { AppStorage } from "./appStorage";
 import { Note } from "./note";
 import { Notes } from "./notes";
 
-
 import firebase from "firebase";
 import {firebaseConfig} from "../config";
 import { NoteDto } from "../Dtos/noteDto";
 
-
-
-
-// async function addNote(note:any) {
-//     const res = await db.collection('notes').add(note);
-// }
-
-//delete collection.doc(id).delete();
-//delete collection.doc(id).update(note);
-//doc.get(id).then(res => {id: res.id, res.data})
-//db.collections(notes).get().then(res =>{size: res.size, docs: res.docs.map})
-
-interface LoadNotesResponse{ 
-    title: string;
-    content: string;
-    color?: string;
-
-}
-
 export class FirebaseAppStorage implements AppStorage{
-
     db: firebase.firestore.Firestore;
 
     constructor(){
         const firebaseApp = firebase.initializeApp(firebaseConfig);
         this.db = firebaseApp.firestore();
     }
-    
 
     async saveNote(note: Note): Promise<void> {
         const noteDto: NoteDto = {
@@ -45,19 +23,37 @@ export class FirebaseAppStorage implements AppStorage{
             isPinned: note.isPinned
         }
         const res = await this.db.collection('notes').add(noteDto);
-        note.id = res.id;
-        console.log(res);
+        note.id = res.id;        
     }
-    updateNote(note: Note): void {
-        console.log("update")
+
+    async updateNote(id: string, isPinned: boolean): Promise<void> {
+        if(id === null) {
+            return;
+        }
+
+        await this.db.collection('notes').doc(id).update({isPinned: isPinned});
     }
-    loadNote(id: string): Note {
-        console.log("load1")
-        return null;
+
+    async loadNote(id: string): Promise<Note> {
+        if(String.length === 0) {
+            return;
+        }
+
+        const response = await this.db.collection('notes').doc(id).get().then(res => {
+            return  {id : res.id, note :  res.data() as NoteDto};
+        });
+
+        return new Note(response.note.title, response.note.body, response.note.color, response.note.isPinned, response.id);
     }
-    deleteNote(id: string): void {
-        console.log("delete")
+
+    async deleteNote(id: string): Promise<void> {
+        if(String.length === 0) {
+            return;
+        }
+
+        await this.db.collection('notes').doc(id).delete();
     }
+
     async loadNotes(): Promise<Notes> {
         const docs = await this.db.collection('notes').get().then(res => res.docs);
         const notes = docs.map(doc => {

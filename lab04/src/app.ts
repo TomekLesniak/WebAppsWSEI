@@ -71,7 +71,11 @@ export class App {
             this.notes.removeNote(note);
             if(toBeRemoved === false) {
                 note.isPinned = !note.isPinned;
+                this.appStorage.updateNote(note.id, note.isPinned);
+                this.notes.removeNote(note);
                 this.notes.addNote(note);
+                this.render();
+                return;
             }
 
            this.appStorage.deleteNote(note.id);

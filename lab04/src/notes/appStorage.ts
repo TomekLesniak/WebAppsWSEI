@@ -5,18 +5,30 @@ import { Notes } from './notes';
 
 
 export class AppStorage implements IAppStorage {
-    saveNote(note: Note): Promise<void> {
-        throw new Error('Method not implemented.');
+    async saveNote(note: Note): Promise<void> {
+        const notes = await this.loadNotes();
+        localStorage.removeItem('notes');
+        localStorage.setItem('notes', JSON.stringify(notes));
     }
-    updateNote(note: Note): void {
-        throw new Error('Method not implemented.');
+
+    async updateNote(id: string, isPinned: boolean): Promise<void> {
+        const updateNote = await this.loadNote(id);
+        updateNote.isPinned = isPinned;
     }
-    loadNote(id: string): Note {
-        throw new Error('Method not implemented.');
+
+    async loadNote(id: string): Promise<Note> {
+        const notes =  await this.loadNotes();
+        return Promise.resolve(notes.sortedNotes.find(x => x.id == id));
     }
-    deleteNote(id: string): void {
-        throw new Error('Method not implemented.');
+
+    async deleteNote(id: string): Promise<void> {
+        const notes = await this.loadNotes();
+        const notesWithoutRemoved = notes.sortedNotes.filter(x => x.id !== id);
+
+        localStorage.removeItem('notes');
+        localStorage.setItem('notes', JSON.stringify(notesWithoutRemoved));
     }
+
     loadNotes(): Promise<Notes> {
         const data = localStorage.getItem('notes');
         if(data){
