@@ -5,15 +5,26 @@ import { Notes } from './notes';
 
 
 export class AppStorage implements IAppStorage {
+    async saveNotes(notes: Note[]): Promise<void> {
+        if(localStorage.getItem('notes') !== null) {
+            localStorage.removeItem('notes');
+        }
+
+        localStorage.setItem('notes', JSON.stringify(notes));
+    }
+
     async saveNote(note: Note): Promise<void> {
         const notes = await this.loadNotes();
-        localStorage.removeItem('notes');
-        localStorage.setItem('notes', JSON.stringify(notes));
+        notes.addNote(note);
+        
+        await this.saveNotes(notes.sortedNotes);
     }
 
     async updateNote(id: string, isPinned: boolean): Promise<void> {
         const updateNote = await this.loadNote(id);
         updateNote.isPinned = isPinned;
+
+        await this.saveNote(updateNote);
     }
 
     async loadNote(id: string): Promise<Note> {
@@ -23,10 +34,10 @@ export class AppStorage implements IAppStorage {
 
     async deleteNote(id: string): Promise<void> {
         const notes = await this.loadNotes();
-        const notesWithoutRemoved = notes.sortedNotes.filter(x => x.id !== id);
+        const note = notes.sortedNotes.find(x => x.id === id);
+        notes.removeNote(note);
 
-        localStorage.removeItem('notes');
-        localStorage.setItem('notes', JSON.stringify(notesWithoutRemoved));
+        await this.saveNotes(notes.sortedNotes);
     }
 
     loadNotes(): Promise<Notes> {

@@ -14,6 +14,12 @@ export class FirebaseAppStorage implements AppStorage{
         this.db = firebaseApp.firestore();
     }
 
+    async saveNotes(notes: Note[]) : Promise<void> {
+        notes.forEach(note => {
+            this.saveNote(note);
+        });
+    }
+
     async saveNote(note: Note): Promise<void> {
         const noteDto: NoteDto = {
             title: note.title,
