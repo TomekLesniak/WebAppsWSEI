@@ -12,6 +12,10 @@ var channel1 = [];
 var channel2 = [];
 var channel3 = [];
 var channel4 = [];
+var channel1TimeStampStart = 0;
+var channel2TimeStampStart = 0;
+var channel3TimeStampStart = 0;
+var channel4TimeStampStart = 0;
 function startApp() {
     initializeElements();
     addEventListeners();
@@ -29,8 +33,42 @@ function initializeElements() {
 }
 function addEventListeners() {
     document.body.addEventListener('keypress', onKeyPressed);
-    document.body.querySelector('#btnChannel1').addEventListener('click', onPlayChannel1);
-    document.body.querySelector('#btnRecordChannel1').addEventListener('click', onRecordChannel1);
+    document.body.querySelector('#btnChannel1').addEventListener('click', function () {
+        onPlayChannel(channel1, channel1TimeStampStart);
+    });
+    document.body.querySelector('#btnChannel2').addEventListener('click', function () {
+        onPlayChannel(channel2, channel2TimeStampStart);
+    });
+    document.body.querySelector('#btnChannel3').addEventListener('click', function () {
+        onPlayChannel(channel3, channel3TimeStampStart);
+    });
+    document.body.querySelector('#btnChannel4').addEventListener('click', function () {
+        onPlayChannel(channel4, channel4TimeStampStart);
+    });
+    document.body.querySelector('#btnRecordChannel1').addEventListener('click', function (ev) {
+        onRecordChannel('1', channel1);
+        if (channel1TimeStampStart === 0) {
+            channel1TimeStampStart = ev.timeStamp;
+        }
+    });
+    document.body.querySelector('#btnRecordChannel2').addEventListener('click', function (ev) {
+        onRecordChannel('2', channel1);
+        if (channel2TimeStampStart === 0) {
+            channel2TimeStampStart = ev.timeStamp;
+        }
+    });
+    document.body.querySelector('#btnRecordChannel3').addEventListener('click', function (ev) {
+        onRecordChannel('3', channel1);
+        if (channel3TimeStampStart === 0) {
+            channel3TimeStampStart = ev.timeStamp;
+        }
+    });
+    document.body.querySelector('#btnRecordChannel4').addEventListener('click', function (ev) {
+        onRecordChannel('4', channel1);
+        if (channel4TimeStampStart === 0) {
+            channel4TimeStampStart = ev.timeStamp;
+        }
+    });
 }
 function onKeyPressed(ev) {
     console.log(ev);
@@ -54,21 +92,23 @@ function onKeyPressed(ev) {
     }
     playSound(key);
 }
-function onRecordChannel1() {
+function onRecordChannel(channelNumber, channelArray) {
     if (currentlyRecordingChannel === '') {
-        currentlyRecordingChannel = '1';
-        console.log('recording 1');
+        channelArray = [];
+        currentlyRecordingChannel = channelNumber;
     }
     else {
         currentlyRecordingChannel = '';
     }
+    console.log(currentlyRecordingChannel);
 }
-function onPlayChannel1() {
-    channel1.forEach(function (sound) {
-        var prevTime = 0;
+function onPlayChannel(channel, timeStamp) {
+    console.log(timeStamp);
+    channel.forEach(function (sound) {
         setTimeout(function () {
             playSound(sound.key);
-        }, sound.time - prevTime);
+            console.log(channel);
+        }, sound.time - timeStamp);
     });
 }
 function playSound(soundKey) {

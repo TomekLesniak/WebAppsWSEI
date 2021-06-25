@@ -5,7 +5,6 @@ export class App {
     constructor() {
         document.body.querySelector('#weatherButton').
                     addEventListener('click', () => this.displayWeather());
-
     }
 
     async displayWeather() {
@@ -13,8 +12,6 @@ export class App {
         const cityName = cityInput.value;
         const weather = await this.getCityInfo(cityName);
         this.createWeatherCard(weather);
-
-        
     }
 
     createWeatherCard(weatherInfo: any){
